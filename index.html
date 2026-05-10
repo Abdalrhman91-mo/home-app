@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0062)blob:https://www.kimi.com/aa5831c2-dfa4-4497-8648-26b4f23e6b59 -->
-<html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#185FA5">
@@ -586,8 +585,22 @@ textarea{resize:vertical;min-height:60px}
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
   </div>
   <div class="card">
-    <p class="st"><i class="ti ti-printer"></i>طباعة التقرير</p>
-    <div class="brow"><button class="bp" onclick="window.print()"><i class="ti ti-printer"></i> طباعة/حفظ PDF</button></div>
+    <p class="st"><i class="ti ti-brand-google" aria-hidden="true"></i>ربط Google Sheets</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">بعد إعداد Apps Script، الصق رابط Web App هنا لمزامنة تلقائية</p>
+    <input type="text" id="sheets-url-input" placeholder="https://script.google.com/macros/s/..." style="font-size:12px;direction:ltr">
+    <div class="brow" style="margin-bottom:8px">
+      <button class="bs" onclick="saveSheetURL()"><i class="ti ti-check" aria-hidden="true"></i> حفظ الرابط</button>
+      <button class="bp" onclick="testSheetConnection()"><i class="ti ti-plug" aria-hidden="true"></i> اختبار الاتصال</button>
+    </div>
+    <div id="sheets-status" style="font-size:12px;color:var(--text-secondary);margin-top:4px"></div>
+    <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border-tertiary)">
+      <div class="rr"><span style="color:var(--text-secondary)">حالة الاتصال</span><span id="sheets-conn-badge" class="badge br">غير متصل</span></div>
+      <div class="rr"><span style="color:var(--text-secondary)">آخر مزامنة</span><span id="sheets-last-sync" style="font-size:12px;color:var(--text-tertiary)">لم تتم بعد</span></div>
+    </div>
+    <div class="brow" style="margin-top:8px">
+      <button class="bp" onclick="syncToSheets()" id="sync-btn" disabled><i class="ti ti-refresh" aria-hidden="true"></i> مزامنة الآن</button>
+      <button class="bw" onclick="pullFromSheets()" id="pull-btn" disabled><i class="ti ti-cloud-download" aria-hidden="true"></i> استيراد من Sheets</button>
+    </div>
   </div>
   <div class="card">
     <p class="st"><i class="ti ti-bell"></i>التنبيهات</p>
@@ -1588,9 +1601,96 @@ function initRender() {
   checkIOSInstall();
 }
 
+// ==================== GOOGLE SHEETS INTEGRATION ====================
+let sheetsURL = localStorage.getItem('sheets_url') || '';
+
+function saveSheetURL() {
+  const url = document.getElementById('sheets-url-input').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    setSheetStatus('❌ الرابط غير صحيح', 'r'); return;
+  }
+  sheetsURL = url;
+  localStorage.setItem('sheets_url', url);
+  document.getElementById('sheets-url-input').value = '';
+  document.getElementById('sync-btn').disabled = false;
+  document.getElementById('pull-btn').disabled = false;
+  document.getElementById('sheets-conn-badge').textContent = 'متصل';
+  document.getElementById('sheets-conn-badge').className = 'badge bg';
+  setSheetStatus('✅ تم حفظ الرابط', 'g');
+}
+
+function setSheetStatus(msg, type) {
+  const el = document.getElementById('sheets-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = type==='g'?'#065f46':type==='r'?'#991b1b':'#92400e';
+}
+
+function testSheetConnection() {
+  if (!sheetsURL) { setSheetStatus('⚠️ أدخل الرابط أولاً', 'w'); return; }
+  setSheetStatus('🔄 جارٍ الاختبار...', 'w');
+  fetch(sheetsURL + '?action=ping', {method:'GET', mode:'no-cors'})
+    .then(() => {
+      setSheetStatus('✅ الاتصال يعمل!', 'g');
+      document.getElementById('sheets-conn-badge').textContent = 'متصل';
+      document.getElementById('sheets-conn-badge').className = 'badge bg';
+      document.getElementById('sync-btn').disabled = false;
+      document.getElementById('pull-btn').disabled = false;
+    }).catch(() => setSheetStatus('❌ تعذّر الاتصال', 'r'));
+}
+
+async function syncToSheets() {
+  if (!sheetsURL) { alert('أضف رابط Google Sheets أولاً'); return; }
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true; btn.textContent = '⏳ جارٍ الإرسال...';
+  try {
+    await fetch(sheetsURL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'sync', data:D, timestamp:new Date().toISOString()})
+    });
+    const t = new Date().toLocaleString('ar-SA');
+    document.getElementById('sheets-last-sync').textContent = t;
+    localStorage.setItem('sheets_last_sync', t);
+    setSheetStatus('✅ تمت المزامنة ' + t, 'g');
+    showAutoSave();
+  } catch(e) {
+    setSheetStatus('❌ فشل الإرسال', 'r');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="ti ti-refresh"></i> مزامنة الآن';
+  }
+}
+
+async function pullFromSheets() {
+  if (!sheetsURL) { alert('أضف رابط Google Sheets أولاً'); return; }
+  const btn = document.getElementById('pull-btn');
+  btn.disabled = true; btn.textContent = '⏳ جارٍ الاستيراد...';
+  try {
+    const res = await fetch(sheetsURL + '?action=pull');
+    const data = await res.json();
+    if (data && data.expenses) {
+      if (confirm('تم جلب البيانات. هل تريد الاستبدال؟')) { D=data; sv(); initRender(); setSheetStatus('✅ تم الاستيراد', 'g'); }
+    } else setSheetStatus('⚠️ لا توجد بيانات في Sheets بعد', 'w');
+  } catch(e) {
+    setSheetStatus('❌ فشل الاستيراد. تأكد من صلاحيات الـ Script', 'r');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="ti ti-cloud-download"></i> استيراد من Sheets';
+  }
+}
+
+function initSheetsUI() {
+  if (!sheetsURL) return;
+  document.getElementById('sync-btn').disabled = false;
+  document.getElementById('pull-btn').disabled = false;
+  document.getElementById('sheets-conn-badge').textContent = 'متصل';
+  document.getElementById('sheets-conn-badge').className = 'badge bg';
+  const ls = localStorage.getItem('sheets_last_sync');
+  if (ls) document.getElementById('sheets-last-sync').textContent = ls;
+}
+
 checkURLData();
 initRender();
-</script>
+initSheetsUI();
 
 <!-- QR Sync Modal -->
 <div id="qr-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;direction:rtl">
