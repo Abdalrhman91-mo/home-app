@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#185FA5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="إدارة المنزل">
+<meta name="description" content="نظام إدارة المنزل والأسرة الشامل - تتبع المصاريف والمهام والمخزون">
+
+<title>إدارة المنزل والأسرة</title>
+
+<!-- PWA Manifest inline via JS (file:// compatible) -->
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjI0IiBmaWxsPSIjMTg1RkE3Ii8+PHN2ZyB4PSI0MCIgeT0iNDAiIHdpZHRoPSIxMTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNMTAgMjB2LTZoNHY2aDV2LThoM0wxMiAzIDMgMTJoM3Y4eiIvPjwvc3ZnPjwvc3ZnPg==">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzE4NUZBNyIvPjxzdmcgeD0iNiIgeT0iNiIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNMTAgMjB2LTZoNHY2aDV2LThoM0wxMiAzIDMgMTJoM3Y4eiIvPjwvc3ZnPjwvc3ZnPg==">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<style>
+:root{
+  --font-sans:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --bg-primary:#ffffff;--bg-secondary:#f5f5f7;--bg-tertiary:#eeeeef;
+  --bg-info:#f0f7ff;--bg-success:#ecfdf3;--bg-warning:#fffbeb;--bg-danger:#fef2f2;
+  --text-primary:#111827;--text-secondary:#6b7280;--text-tertiary:#9ca3af;
+  --text-info:#1e40af;--text-success:#065f46;--text-warning:#92400e;--text-danger:#991b1b;
+  --border-primary:#e5e7eb;--border-secondary:#d1d5db;--border-tertiary:#e5e7eb;
+  --border-info:#bfdbfe;--border-success:#a7f3d0;--border-warning:#fde68a;--border-danger:#fecaca;
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);-webkit-tap-highlight-color:transparent}
+body{background:var(--bg-secondary);color:var(--text-primary);line-height:1.5;overscroll-behavior-y:none}
+.nav{display:flex;gap:2px;padding:8px 8px 0;background:var(--bg-primary);border-bottom:0.5px solid var(--border-tertiary);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:50}
+.nav::-webkit-scrollbar{display:none}
+.nb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:var(--radius-md) var(--radius-md) 0 0;border:none;background:transparent;color:var(--text-secondary);font-size:10px;cursor:pointer;white-space:nowrap;min-width:52px;border-bottom:2px solid transparent;transition:all .15s}
+.nb.active{color:var(--text-info);border-bottom:2px solid #185FA5;background:var(--bg-info)}
+.nb i{font-size:17px}
+.page{display:none;padding:12px;direction:rtl;max-width:800px;margin:0 auto;padding-bottom:80px}
+.page.active{display:block}
+.card{background:var(--bg-primary);border:0.5px solid var(--border-tertiary);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.mrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.met{background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px 12px}
+.ml{font-size:11px;color:var(--text-secondary);margin-bottom:4px}
+.mv{font-size:18px;font-weight:600;color:var(--text-primary)}
+.mv.g{color:#0F6E56}.mv.r{color:#A32D2D}.mv.a{color:#854F0B}.mv.b{color:#185FA5}
+.st{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{width:100%;margin-bottom:8px;padding:8px 10px;font-size:14px;border:0.5px solid var(--border-secondary);border-radius:var(--radius-md);background:var(--bg-primary);direction:rtl;outline:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.1)}
+textarea{resize:vertical;min-height:60px}
+.bp{flex:1;padding:8px;background:var(--bg-info);color:var(--text-info);border:0.5px solid var(--border-info);border-radius:var(--radius-md);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s}
+.bp:hover{background:#dbeafe}
+.bs{flex:1;padding:8px;background:var(--bg-success);color:var(--text-success);border:0.5px solid var(--border-success);border-radius:var(--radius-md);cursor:pointer;font-size:13px;font-weight:500}
+.bw{flex:1;padding:8px;background:var(--bg-warning);color:var(--text-warning);border:0.5px solid var(--border-warning);border-radius:var(--radius-md);cursor:pointer;font-size:13px;font-weight:500}
+.bd{padding:6px 10px;background:var(--bg-danger);color:var(--text-danger);border:0.5px solid var(--border-danger);border-radius:var(--radius-md);cursor:pointer;font-size:12px;border:none}
+.brow{display:flex;gap:8px;margin-top:4px}
+.li{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--border-tertiary);font-size:13px}
+.li:last-child{border-bottom:none}
+.badge{font-size:11px;padding:3px 8px;border-radius:var(--radius-md);font-weight:500}
+.br{background:var(--bg-danger);color:var(--text-danger)}
+.bg{background:var(--bg-success);color:var(--text-success)}
+.ba{background:var(--bg-warning);color:var(--text-warning)}
+.bb{background:var(--bg-info);color:var(--text-info)}
+.pb{height:8px;background:var(--bg-secondary);border-radius:999px;overflow:hidden;margin-top:6px}
+.pf{height:100%;border-radius:999px;transition:width .3s}
+.chi{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border-tertiary)}
+.chi:last-child{border-bottom:none}
+.chi input{width:auto;margin:0}
+.chi label{font-size:13px;flex:1;cursor:pointer}
+.chi label.dn{text-decoration:line-through;color:var(--text-tertiary)}
+.empty{text-align:center;color:var(--text-tertiary);font-size:13px;padding:18px 0}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border-tertiary);font-size:13px}
+.rr:last-child{border-bottom:none}
+.pdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.notif-banner{background:var(--bg-warning);border:0.5px solid var(--border-warning);border-radius:var(--radius-md);padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--text-warning);display:flex;align-items:center;gap:8px}
+.bill-overdue{background:var(--bg-danger);border:0.5px solid var(--border-danger);border-radius:var(--radius-md);padding:8px 12px;margin-bottom:8px;font-size:12px;color:var(--text-danger);display:flex;align-items:center;gap:8px}
+.info-card{background:var(--bg-info);border:0.5px solid var(--border-info);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:var(--text-info);direction:rtl;margin-bottom:10px}
+.fm-btn{padding:4px 10px;border:1px solid var(--border-secondary);border-radius:999px;font-size:12px;cursor:pointer;background:var(--bg-primary);color:var(--text-secondary);transition:all .15s}
+.fm-btn.active{border-color:#185FA5;background:var(--bg-info);color:#185FA5;font-weight:500}
+.goal-card{border:0.5px solid var(--border-tertiary);border-radius:var(--radius-md);padding:10px;margin-bottom:8px;background:var(--bg-primary)}
+.goal-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.goal-bar{height:6px;background:var(--bg-secondary);border-radius:999px;overflow:hidden;margin:6px 0}
+.goal-fill{height:100%;border-radius:999px;transition:width .3s}
+.goal-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text-secondary)}
+.contact-card{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border-tertiary)}
+.contact-card:last-child{border-bottom:none}
+.contact-icon{width:36px;height:36px;border-radius:50%;background:var(--bg-info);display:flex;align-items:center;justify-content:center;color:#185FA5;font-size:16px;flex-shrink:0}
+.contact-info{flex:1}
+.contact-name{font-size:13px;font-weight:500}
+.contact-phone{font-size:12px;color:var(--text-secondary);direction:ltr;text-align:right}
+.doc-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border-tertiary);font-size:13px}
+.doc-item:last-child{border-bottom:none}
+.sub-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border-tertiary)}
+.sub-item:last-child{border-bottom:none}
+.sub-name{font-size:13px;font-weight:500}
+.sub-meta{font-size:11px;color:var(--text-secondary)}
+.sub-cost{font-size:13px;font-weight:500;color:var(--text-primary)}
+.meal-day{background:var(--bg-secondary);border-radius:var(--radius-md);padding:8px 10px;margin-bottom:6px;font-size:13px}
+.meal-day strong{color:var(--text-primary);font-size:12px}
+.meal-item{color:var(--text-secondary);font-size:12px;margin-top:2px}
+
+/* Install Banner */
+.install-banner{position:fixed;bottom:0;left:0;right:0;background:var(--bg-primary);border-top:1px solid var(--border-tertiary);padding:12px 16px;display:none;align-items:center;gap:12px;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,0.1)}
+.install-banner.show{display:flex}
+.install-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#185FA5,#0F6E56);display:flex;align-items:center;justify-content:center;color:white;font-size:24px}
+.install-text{flex:1}
+.install-title{font-size:14px;font-weight:600;color:var(--text-primary)}
+.install-sub{font-size:12px;color:var(--text-secondary)}
+.install-btn{padding:8px 16px;background:#185FA5;color:white;border:none;border-radius:var(--radius-md);font-size:13px;font-weight:500;cursor:pointer}
+.install-close{background:none;border:none;color:var(--text-tertiary);font-size:20px;cursor:pointer;padding:4px}
+
+/* Auto-save indicator */
+.auto-save{position:fixed;top:60px;left:12px;background:var(--bg-success);color:var(--text-success);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:500;display:none;align-items:center;gap:4px;z-index:60;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.auto-save.show{display:flex}
+
+/* Share button floating */
+.fab-share{position:fixed;bottom:80px;left:16px;width:48px;height:48px;border-radius:50%;background:#185FA5;color:white;border:none;box-shadow:0 4px 12px rgba(24,95,165,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:90}
+
+@media print{.nav{display:none}.page{display:block!important}.bd{display:none}.install-banner,.fab-share,.auto-save{display:none!important}}
+
+/* Enhanced Icons */
+.nb i { font-size: 18px; margin-bottom: 3px; }
+.nb { font-size: 11px; padding: 8px 10px; }
+
+/* Savings icon special styling */
+.ti-coin { color: #F59E0B; }
+.nb.active .ti-coin { color: #185FA5; }
+
+/* Smooth transitions */
+.page { animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Better card shadows */
+.card { transition: transform 0.15s, box-shadow 0.15s; }
+.card:active { transform: scale(0.98); }
+
+/* QR Modal enhancements */
+#qr-modal, #import-modal { backdrop-filter: blur(4px); }
+
+/* Floating button pulse */
+.fab-share { animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 4px 12px rgba(24,95,165,0.4); } 50% { box-shadow: 0 4px 20px rgba(24,95,165,0.6); } }
+
+</style>
+<!--<base target="_blank">--><base href="." target="_blank">
+</head>
+<body>
+
+<h1 class="sr-only">نظام إدارة المنزل والأسرة الشامل</h1>
+
+<!-- Auto-save indicator -->
+<div class="auto-save" id="auto-save"><i class="ti ti-check"></i> تم الحفظ</div>
+
+<!-- Install Banner -->
+<div class="install-banner show" id="install-banner">
+  <div class="install-icon"><i class="ti ti-home"></i></div>
+  <div class="install-text">
+    <div class="install-title">إدارة المنزل والأسرة</div>
+    <div class="install-sub">ثبّت التطبيق للوصول السريع والعمل بدون إنترنت</div>
+  </div>
+  <button class="install-btn" id="install-btn" onclick="installApp()">تثبيت</button>
+  <button class="install-close" onclick="dismissInstall()">×</button>
+</div>
+
+<!-- Floating Share Button -->
+<button class="fab-share" onclick="quickShare()" title="مشاركة البيانات"><i class="ti ti-share"></i></button>
+
+<div style="background:var(--bg-primary)">
+
+<!-- Header -->
+<div style="padding:10px 14px 8px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border-tertiary);direction:rtl;display:flex;justify-content:space-between;align-items:center">
+  <div>
+    <p style="font-size:16px;font-weight:600;color:var(--text-primary)">🏠 إدارة المنزل والأسرة</p>
+    <p style="font-size:11px;color:var(--text-secondary)" id="today-date">الأحد، 10 مايو 2026</p>
+  </div>
+  <div style="text-align:left">
+    <p style="font-size:10px;color:var(--text-secondary)">الرصيد المتبقي</p>
+    <p style="font-size: 15px; font-weight: 600; color: var(--text-secondary);" id="hdr-bal">— ر.س</p>
+  </div>
+</div>
+
+<div id="alerts-bar"></div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <button class="nb active" onclick="sp(&#39;home&#39;,this)"><i class="ti ti-home"></i>الرئيسية</button>
+  <button class="nb" onclick="sp(&#39;expenses&#39;,this)"><i class="ti ti-cash"></i>المصاريف</button>
+  <button class="nb" onclick="sp(&#39;bills&#39;,this)"><i class="ti ti-file-invoice"></i>الفواتير</button>
+  <button class="nb" onclick="sp(&#39;shopping&#39;,this)"><i class="ti ti-shopping-cart"></i>المشتريات</button>
+  <button class="nb" onclick="sp(&#39;tasks&#39;,this)"><i class="ti ti-clipboard-list"></i>المهام</button>
+  <button class="nb" onclick="sp(&#39;inventory&#39;,this)"><i class="ti ti-basket"></i>المخزون</button>
+  <button class="nb" onclick="sp(&#39;planning&#39;,this)"><i class="ti ti-calendar-event"></i>التخطيط</button>
+  <button class="nb" onclick="sp(&#39;maintenance&#39;,this)"><i class="ti ti-tool"></i>الصيانة</button>
+  <button class="nb" onclick="sp(&#39;contacts&#39;,this)"><i class="ti ti-address-book"></i>الطوارئ</button>
+  <button class="nb" onclick="sp(&#39;docs&#39;,this)"><i class="ti ti-file-certificate"></i>الوثائق</button>
+  <button class="nb" onclick="sp(&#39;savings&#39;,this)"><i class="ti ti-coin"></i>الادخار</button>
+  <button class="nb" onclick="sp(&#39;meals&#39;,this)"><i class="ti ti-chef-hat"></i>الوجبات</button>
+  <button class="nb" onclick="sp(&#39;subs&#39;,this)"><i class="ti ti-refresh"></i>الاشتراكات</button>
+  <button class="nb" onclick="sp(&#39;report&#39;,this)"><i class="ti ti-chart-bar"></i>التقرير</button>
+  <button class="nb" onclick="sp(&#39;settings&#39;,this)"><i class="ti ti-settings"></i>الإعدادات</button>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="mrow">
+    <div class="met"><div class="ml">الرصيد المتبقي</div><div class="mv " id="h-bal">— ر.س</div></div>
+    <div class="met"><div class="ml">المصاريف هذا الشهر</div><div class="mv r" id="h-exp">٠ ر.س</div></div>
+  </div>
+  <div class="mrow">
+    <div class="met"><div class="ml">فواتير قادمة</div><div class="mv a" id="h-bills">0</div></div>
+    <div class="met"><div class="ml">طلبات المشتريات</div><div class="mv" id="h-shop">0</div></div>
+  </div>
+  <div class="mrow">
+    <div class="met"><div class="ml">مهام معلقة</div><div class="mv a" id="h-tasks">0</div></div>
+    <div class="met"><div class="ml">أهداف الادخار</div><div class="mv b" id="h-goals">0</div></div>
+  </div>
+  <div class="card" id="home-overdue-bills"><p class="st"><i class="ti ti-check"></i>لا توجد فواتير قادمة قريباً</p></div>
+  <div class="card" id="home-shop-pending"><p class="st"><i class="ti ti-check"></i>لا توجد طلبات مشتريات معلقة</p></div>
+  <div class="card" id="home-tasks-urgent"><p class="st"><i class="ti ti-check"></i>لا توجد مهام عاجلة</p></div>
+  <div class="card" id="home-maintenance"><p class="st"><i class="ti ti-check"></i>لا توجد سجلات صيانة</p></div>
+  <div class="info-card">
+    <p style="font-weight:600;margin-bottom:4px"><i class="ti ti-device-floppy"></i> الحفظ التلقائي مفعّل</p>
+    <p>يتم حفظ البيانات تلقائياً في متصفحك. للمزامنة مع الزوجة، اضغط زر المشاركة ↙️</p>
+  </div>
+</div>
+
+<!-- EXPENSES -->
+<div class="page" id="page-expenses">
+  <div class="mrow">
+    <div class="met"><div class="ml">إجمالي المصاريف</div><div class="mv r" id="te">٠ ر.س</div></div>
+    <div class="met"><div class="ml">الرصيد المتبقي</div><div class="mv " id="re">— ر.س</div></div>
+  </div>
+  <div class="card" style="padding:10px 14px">
+    <div class="pb"><div class="pf" id="ep-fill" style="width:0%;background:#0F6E56"></div></div>
+    <p style="font-size:11px;color:var(--text-secondary);margin-top:4px" id="ep-pct">0% من الرصيد الافتتاحي</p>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة مصروف</p>
+    <input type="text" id="en" placeholder="وصف المصروف">
+    <input type="number" id="ea" placeholder="المبلغ بالريال">
+    <select id="ec">
+      <option value="إيجار">إيجار</option>
+      <option value="فواتير">فواتير</option>
+      <option value="طعام">طعام وتسوق</option>
+      <option value="صيانة">صيانة</option>
+      <option value="تعليم">تعليم</option>
+      <option value="صحة">صحة</option>
+      <option value="ترفيه">ترفيه</option>
+      <option value="مواصلات">مواصلات</option>
+      <option value="أخرى">أخرى</option>
+    </select>
+    <div class="brow"><button class="bp" onclick="addExp()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="exp-list"><p class="empty">لا توجد مصاريف</p></div>
+</div>
+
+<!-- BILLS -->
+<div class="page" id="page-bills">
+  <div class="mrow">
+    <div class="met"><div class="ml">فواتير ثابتة</div><div class="mv" id="bt">0</div></div>
+    <div class="met"><div class="ml">إجمالي شهري</div><div class="mv r" id="bm">٠ ر.س</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة فاتورة ثابتة</p>
+    <input type="text" id="bn" placeholder="اسم الفاتورة (مثال: إيجار، كهرباء)">
+    <input type="number" id="ba" placeholder="المبلغ الشهري">
+    <input type="number" id="bd" placeholder="يوم الاستحقاق (1-31)" min="1" max="31">
+    <select id="bc">
+      <option value="إيجار">إيجار</option>
+      <option value="كهرباء">كهرباء</option>
+      <option value="ماء">ماء</option>
+      <option value="إنترنت">إنترنت</option>
+      <option value="جوال">جوال</option>
+      <option value="تأمين">تأمين</option>
+      <option value="تعليم">تعليم</option>
+      <option value="أخرى">أخرى</option>
+    </select>
+    <div class="brow"><button class="bp" onclick="addBill()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="bill-list"><p class="empty">لا توجد فواتير ثابتة</p></div>
+</div>
+
+<!-- SHOPPING -->
+<div class="page" id="page-shopping">
+  <div class="mrow">
+    <div class="met"><div class="ml">طلبات معلقة</div><div class="mv a" id="sp-pend">0</div></div>
+    <div class="met"><div class="ml">تم الشراء</div><div class="mv g" id="sp-done">0</div></div>
+  </div>
+  <div class="card" style="background:var(--bg-success);border-color:var(--border-success)">
+    <p style="font-size:12px;color:var(--text-success);font-weight:600;margin-bottom:4px"><i class="ti ti-users"></i> قائمة مشتركة مع الزوجة</p>
+    <p style="font-size:11px;color:var(--text-success)">الزوجة تضيف طلباتها هنا، وتصلك تنبيه فوري. كلاكما يرى القائمة نفسها.</p>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة طلب شراء</p>
+    <input type="text" id="sh-name" placeholder="اسم الصنف (مثال: أرز، شامبو)">
+    <input type="number" id="sh-qty" placeholder="الكمية المطلوبة">
+    <select id="sh-cat">
+      <option value="طعام">طعام</option>
+      <option value="نظافة">نظافة ومنظفات</option>
+      <option value="خضار وفاكهة">خضار وفاكهة</option>
+      <option value="لحوم">لحوم ودواجن</option>
+      <option value="مشروبات">مشروبات</option>
+      <option value="أدوات منزل">أدوات منزل</option>
+      <option value="أخرى">أخرى</option>
+    </select>
+    <select id="sh-who">
+      <option value="أنا">أنا</option>
+      <option value="الزوجة">الزوجة</option>
+      <option value="الأطفال">الأطفال</option>
+    </select>
+    <div class="brow"><button class="bp" onclick="addShop()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="shop-list"><p class="empty">القائمة فارغة</p></div>
+</div>
+
+<!-- TASKS -->
+<div class="page" id="page-tasks">
+  <div class="mrow">
+    <div class="met"><div class="ml">إجمالي المهام</div><div class="mv" id="tt">0</div></div>
+    <div class="met"><div class="ml">مكتملة</div><div class="mv g" id="td">0</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>مهمة جديدة</p>
+    <input type="text" id="tk-name" placeholder="اسم المهمة">
+    <select id="tk-pri"><option value="high">عاجل</option><option value="med" selected="">متوسط</option><option value="low">غير عاجل</option></select>
+    <select id="tk-cat">
+      <option value="صيانة">صيانة</option>
+      <option value="تنظيف">تنظيف</option>
+      <option value="تسوق">تسوق</option>
+      <option value="دراسة">دراسة وأطفال</option>
+      <option value="أخرى">أخرى</option>
+    </select>
+    <select id="tk-assign">
+      <option value="أنا">أنا</option>
+      <option value="الزوجة">الزوجة</option>
+      <option value="الأطفال">الأطفال</option>
+      <option value="مشترك">مشترك</option>
+    </select>
+    <div class="brow"><button class="bp" onclick="addTask()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="task-list"><p class="empty">لا توجد مهام</p></div>
+</div>
+
+<!-- INVENTORY -->
+<div class="page" id="page-inventory">
+  <div class="mrow">
+    <div class="met"><div class="ml">أصناف المخزون</div><div class="mv" id="it">0</div></div>
+    <div class="met"><div class="ml">ينفد قريباً</div><div class="mv r" id="il">0</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة صنف</p>
+    <input type="text" id="iv-name" placeholder="اسم الصنف">
+    <input type="number" id="iv-qty" placeholder="الكمية الحالية">
+    <input type="number" id="iv-min" placeholder="الحد الأدنى للتنبيه">
+    <div class="brow"><button class="bp" onclick="addInv()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="inv-list"><p class="empty">لا توجد أصناف</p></div>
+</div>
+
+<!-- PLANNING -->
+<div class="page" id="page-planning">
+  <div class="mrow">
+    <div class="met"><div class="ml">مناسبات هذا الشهر</div><div class="mv b" id="pl-events">0</div></div>
+    <div class="met"><div class="ml">مواعيد مدرسة</div><div class="mv a" id="pl-school">0</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-calendar-plus"></i>إضافة موعد أو هدف</p>
+    <input type="text" id="pl-title" placeholder="عنوان الموعد (مثال: اجتماع أولياء الأمور)">
+    <input type="date" id="pl-date">
+    <select id="pl-type">
+      <option value="school">موعد مدرسي</option>
+      <option value="event">مناسبة عائلية</option>
+      <option value="goal">هدف شهري</option>
+      <option value="medical">موعد طبي</option>
+    </select>
+    <textarea id="pl-note" placeholder="ملاحظات إضافية..."></textarea>
+    <div class="brow"><button class="bp" onclick="addPlan()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="plan-list"><p class="empty">لا توجد مواعيد</p></div>
+</div>
+
+<!-- MAINTENANCE -->
+<div class="page" id="page-maintenance">
+  <div class="mrow">
+    <div class="met"><div class="ml">سجلات الصيانة</div><div class="mv" id="mt-count">0</div></div>
+    <div class="met"><div class="ml">التكلفة الإجمالية</div><div class="mv r" id="mt-cost">٠ ر.س</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>تسجيل عملية صيانة</p>
+    <input type="text" id="mt-item" placeholder="الجهاز/المكان (مثال: مكيف صالة، سباكة مطبخ)">
+    <input type="text" id="mt-desc" placeholder="وصف العطل والإصلاح">
+    <input type="number" id="mt-cost-input" placeholder="التكلفة بالريال">
+    <input type="date" id="mt-date">
+    <input type="text" id="mt-warranty" placeholder="فترة الضمان (مثال: 6 أشهر)">
+    <input type="tel" id="mt-phone" placeholder="رقم فني الصيانة">
+    <div class="brow"><button class="bp" onclick="addMaint()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="maint-list"><p class="empty">لا توجد سجلات صيانة</p></div>
+</div>
+
+<!-- CONTACTS -->
+<div class="page" id="page-contacts">
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة جهة اتصال</p>
+    <input type="text" id="ct-name" placeholder="الاسم (مثال: سباك محلي)">
+    <select id="ct-type">
+      <option value="emergency">طوارئ</option>
+      <option value="maintenance">صيانة</option>
+      <option value="medical">طبيب/مستشفى</option>
+      <option value="school">مدرسة</option>
+      <option value="other">أخرى</option>
+    </select>
+    <input type="tel" id="ct-phone" placeholder="رقم الجوال" dir="ltr">
+    <input type="text" id="ct-note" placeholder="ملاحظات (مثال: يعمل 24 ساعة)">
+    <div class="brow"><button class="bp" onclick="addContact()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="contact-list"><p class="empty">لا توجد جهات اتصال</p></div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="page" id="page-docs">
+  <div class="mrow">
+    <div class="met"><div class="ml">الوثائق المحفوظة</div><div class="mv b" id="dc-count">0</div></div>
+    <div class="met"><div class="ml">وثائق قاربت على الانتهاء</div><div class="mv a" id="dc-exp">0</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة وثيقة</p>
+    <input type="text" id="dc-name" placeholder="اسم الوثيقة (مثال: عقد الإيجار)">
+    <select id="dc-type">
+      <option value="rent">عقد إيجار</option>
+      <option value="insurance">تأمين</option>
+      <option value="warranty">ضمان جهاز</option>
+      <option value="id">هوية/إقامة</option>
+      <option value="car">استمارة سيارة</option>
+      <option value="school">وثائق مدرسية</option>
+      <option value="medical">تقرير طبي</option>
+      <option value="other">أخرى</option>
+    </select>
+    <input type="text" id="dc-ref" placeholder="رقم المرجع أو رقم الوثيقة">
+    <input type="date" id="dc-expiry" placeholder="تاريخ الانتهاء (إن وجد)">
+    <textarea id="dc-note" placeholder="ملاحظات..."></textarea>
+    <div class="brow"><button class="bp" onclick="addDoc()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="doc-list"><p class="empty">لا توجد وثائق</p></div>
+</div>
+
+<!-- SAVINGS -->
+<div class="page" id="page-savings">
+  <div class="mrow">
+    <div class="met"><div class="ml">أهداف الادخار</div><div class="mv b" id="sg-count">0</div></div>
+    <div class="met"><div class="ml">المبلغ المدخر</div><div class="mv g" id="sg-total">٠ ر.س</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>هدف ادخار جديد</p>
+    <input type="text" id="sg-name" placeholder="الهدف (مثال: رحلة عمرة، سيارة جديدة)">
+    <input type="number" id="sg-target" placeholder="المبلغ المستهدف بالريال">
+    <input type="number" id="sg-current" placeholder="المبلغ الحالي المدخر">
+    <input type="date" id="sg-date" placeholder="التاريخ المستهدف">
+    <div class="brow"><button class="bp" onclick="addSavings()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="savings-list"><p class="empty">لا توجد أهداف ادخار</p></div>
+</div>
+
+<!-- MEALS -->
+<div class="page" id="page-meals">
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>تخطيط وجبة</p>
+    <select id="ml-day">
+      <option value="0">الأحد</option>
+      <option value="1">الاثنين</option>
+      <option value="2">الثلاثاء</option>
+      <option value="3">الأربعاء</option>
+      <option value="4">الخميس</option>
+      <option value="5">الجمعة</option>
+      <option value="6">السبت</option>
+    </select>
+    <input type="text" id="ml-lunch" placeholder="الغداء">
+    <input type="text" id="ml-dinner" placeholder="العشاء">
+    <div class="brow"><button class="bp" onclick="addMeal()"><i class="ti ti-plus"></i> حفظ</button></div>
+  </div>
+  <div id="meal-list"><p class="empty">لا توجد وجبات مخططة</p></div>
+</div>
+
+<!-- SUBSCRIPTIONS -->
+<div class="page" id="page-subs">
+  <div class="mrow">
+    <div class="met"><div class="ml">الاشتراكات النشطة</div><div class="mv b" id="sb-count">0</div></div>
+    <div class="met"><div class="ml">الإجمالي الشهري</div><div class="mv r" id="sb-total">٠ ر.س</div></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-plus-circle"></i>إضافة اشتراك</p>
+    <input type="text" id="sb-name" placeholder="اسم الخدمة (مثال: نتفليكس، سبوتيفاي)">
+    <input type="number" id="sb-cost" placeholder="التكلفة الشهرية">
+    <select id="sb-cycle">
+      <option value="monthly">شهري</option>
+      <option value="yearly">سنوي</option>
+    </select>
+    <input type="number" id="sb-day" placeholder="يوم التجديد (1-31)" min="1" max="31">
+    <div class="brow"><button class="bp" onclick="addSub()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+  <div id="sub-list"><p class="empty">لا توجد اشتراكات</p></div>
+</div>
+
+<!-- REPORT -->
+<div class="page" id="page-report">
+  <div class="card">
+    <p class="st"><i class="ti ti-chart-bar"></i>ملخص الشهر المالي</p>
+    <div class="mrow" style="margin-bottom:6px">
+      <div class="met"><div class="ml">الرصيد الافتتاحي</div><div class="mv" id="r-open">—</div></div>
+      <div class="met"><div class="ml">الفواتير الثابتة</div><div class="mv r" id="r-bills">0 ر.س</div></div>
+    </div>
+    <div class="mrow" style="margin-bottom:6px">
+      <div class="met"><div class="ml">مصاريف أخرى</div><div class="mv r" id="r-other">0 ر.س</div></div>
+      <div class="met"><div class="ml">اشتراكات</div><div class="mv r" id="r-subs">0 ر.س</div></div>
+    </div>
+    <div class="mrow" style="margin-bottom:6px">
+      <div class="met"><div class="ml">صيانة</div><div class="mv r" id="r-maint">0 ر.س</div></div>
+      <div class="met"><div class="ml">إجمالي الإنفاق</div><div class="mv r" id="r-total">0 ر.س</div></div>
+    </div>
+    <div class="mrow" style="margin-bottom:0">
+      <div class="met"><div class="ml">الرصيد المتبقي</div><div class="mv g" id="r-rem">—</div></div>
+      <div class="met"><div class="ml">نسبة الإنفاق</div><div class="mv a" id="r-pct">0%</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-layout-list"></i>توزيع المصاريف</p>
+    <div id="r-cats"><p class="empty">لا توجد مصاريف</p></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-clipboard-check"></i>ملخص شامل</p>
+    <div class="rr"><span style="color:var(--text-secondary)">إجمالي المهام</span><span id="r-tt" style="font-weight:500">0</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">مهام مكتملة</span><span id="r-td" style="font-weight:500;color:#0F6E56">0</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">أصناف تنفد</span><span id="r-il" style="font-weight:500;color:#A32D2D">0</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">طلبات مشتريات معلقة</span><span id="r-sp" style="font-weight:500;color:#854F0B">0</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">سجلات صيانة</span><span id="r-mt" style="font-weight:500">0</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">أهداف ادخار نشطة</span><span id="r-sg" style="font-weight:500;color:#185FA5">0</span></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="card">
+    <p class="st"><i class="ti ti-wallet"></i>الرصيد الافتتاحي للشهر</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">راتبك أو ميزانيتك الشهرية</p>
+    <input type="number" id="ob-input" placeholder="مثال: 10000">
+    <div class="brow"><button class="bs" onclick="saveOB()"><i class="ti ti-check"></i> حفظ</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border-tertiary)">
+      <span style="font-size:12px;color:var(--text-secondary)">الرصيد المحفوظ</span>
+      <span style="font-weight:500;color:#0F6E56" id="ob-display">غير محدد</span>
+    </div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-users"></i>أعضاء الأسرة</p>
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap" id="family-members">
+      <button class="fm-btn active" onclick="setMember(&#39;أنا&#39;,this)">أنا</button>
+      <button class="fm-btn" onclick="setMember(&#39;الزوجة&#39;,this)">الزوجة</button>
+      <button class="fm-btn" onclick="setMember(&#39;الأطفال&#39;,this)">الأطفال</button>
+    </div>
+    <p style="font-size:11px;color:var(--text-secondary)">اختر العضو لتوزيع المهام والمشتريات بشكل صحيح</p>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-share"></i>مزامنة البيانات مع الزوجة</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">شارك البيانات مع الزوجة بأكثر من طريقة</p>
+    <div class="brow" style="margin-bottom:8px">
+      <button class="bp" onclick="generateQR()"><i class="ti ti-qrcode"></i> إنشاء QR</button>
+      <button class="bp" onclick="shareWhatsApp()" style="background:#25D366;color:white;border-color:#25D366"><i class="ti ti-brand-whatsapp"></i> واتساب</button>
+    </div>
+    <div class="brow" style="margin-bottom:8px">
+      <button class="bp" onclick="openCameraScan()" style="background:#0F6E56;color:white;border-color:#0F6E56"><i class="ti ti-camera"></i> مسح QR بالكاميرا</button>
+      <button class="bp" onclick="openImportModal()" style="background:var(--bg-warning);color:var(--text-warning);border-color:var(--border-warning)"><i class="ti ti-file-import"></i> استيراد نص</button>
+    </div>
+    <div class="brow">
+      <button class="bp" onclick="copyToClipboard()" style="background:var(--bg-secondary);color:var(--text-secondary);border-color:var(--border-secondary)"><i class="ti ti-copy"></i> نسخ البيانات</button>
+      <button class="bp" onclick="exportData()"><i class="ti ti-download"></i> تصدير ملف</button>
+    </div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-device-floppy"></i>استيراد من ملف</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">استورد ملف JSON محفوظ من جهاز آخر</p>
+    <div class="brow">
+      <button class="bw" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i> اختر ملف JSON</button>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-brand-google" aria-hidden="true"></i>ربط Google Sheets</p>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">بعد إعداد Apps Script، الصق رابط Web App هنا لمزامنة تلقائية</p>
+    <input type="text" id="sheets-url-input" placeholder="https://script.google.com/macros/s/..." style="font-size:12px;direction:ltr">
+    <div class="brow" style="margin-bottom:8px">
+      <button class="bs" onclick="saveSheetURL()"><i class="ti ti-check" aria-hidden="true"></i> حفظ الرابط</button>
+      <button class="bp" onclick="testSheetConnection()"><i class="ti ti-plug" aria-hidden="true"></i> اختبار الاتصال</button>
+    </div>
+    <div id="sheets-status" style="font-size:12px;color:var(--text-secondary);margin-top:4px"></div>
+    <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border-tertiary)">
+      <div class="rr"><span style="color:var(--text-secondary)">حالة الاتصال</span><span id="sheets-conn-badge" class="badge br">غير متصل</span></div>
+      <div class="rr"><span style="color:var(--text-secondary)">آخر مزامنة</span><span id="sheets-last-sync" style="font-size:12px;color:var(--text-tertiary)">لم تتم بعد</span></div>
+    </div>
+    <div class="brow" style="margin-top:8px">
+      <button class="bp" onclick="syncToSheets()" id="sync-btn" disabled><i class="ti ti-refresh" aria-hidden="true"></i> مزامنة الآن</button>
+      <button class="bw" onclick="pullFromSheets()" id="pull-btn" disabled><i class="ti ti-cloud-download" aria-hidden="true"></i> استيراد من Sheets</button>
+    </div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-bell"></i>التنبيهات</p>
+    <div class="rr"><span style="color:var(--text-secondary)">تنبيه فواتير متأخرة</span><span class="badge bg">مفعّل</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">تنبيه مخزون ينفد</span><span class="badge bg">مفعّل</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">تنبيه طلبات الزوجة</span><span class="badge bg">مفعّل</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">تنبيه وثائق تنتهي</span><span class="badge bg">مفعّل</span></div>
+    <div class="rr"><span style="color:var(--text-secondary)">تنبيه اشتراكات</span><span class="badge bg">مفعّل</span></div>
+  </div>
+  <div class="card">
+    <p class="st"><i class="ti ti-info-circle"></i>كيفية التثبيت على الشاشة الرئيسية</p>
+    <p style="font-size:12px;color:var(--text-secondary);line-height:1.8">
+      <strong>📱 iPhone/iPad:</strong><br>
+      Safari ← زر المشاركة ← إضافة للشاشة الرئيسية<br><br>
+      <strong>🤖 Android:</strong><br>
+      Chrome ← القائمة (⋮) ← تثبيت التطبيق / إضافة للشاشة الرئيسية<br><br>
+      <strong>💻 الكمبيوتر:</strong><br>
+      Chrome/Edge ← القائمة ← تثبيت كتطبيق
+    </p>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ==================== PWA & SERVICE WORKER ====================
+// Inject manifest dynamically so it works when opened as local file
+(function(){
+  const manifest = {
+    name: 'إدارة المنزل والأسرة',
+    short_name: 'منزلي',
+    start_url: '.',
+    display: 'standalone',
+    background_color: '#f5f5f7',
+    theme_color: '#185FA5',
+    orientation: 'portrait',
+    icons: [
+      { src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjI0IiBmaWxsPSIjMTg1RkE1Ii8+PHRleHQgeD0iOTYiIHk9IjEyOCIgZm9udC1zaXplPSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj7wn4+APC90ZXh0Pjwvc3ZnPg==', sizes: '192x192', type: 'image/svg+xml' },
+      { src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjY0IiBmaWxsPSIjMTg1RkE1Ii8+PHRleHQgeD0iMjU2IiB5PSIzNDAiIGZvbnQtc2l6ZT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+8J+PgDwvdGV4dD48L3N2Zz4=', sizes: '512x512', type: 'image/svg+xml' }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest'; link.href = url;
+  document.head.appendChild(link);
+})();
+
+// Service Worker via Blob (works with file:// and https://)
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  const swCode = `
+    const CACHE = 'home-mgmt-v4';
+    self.addEventListener('install', e => { self.skipWaiting(); });
+    self.addEventListener('activate', e => { e.waitUntil(clients.claim()); });
+    self.addEventListener('fetch', e => {
+      if (e.request.mode === 'navigate') {
+        e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+      }
+    });
+  `;
+  const swBlob = new Blob([swCode], {type: 'text/javascript'});
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL).catch(() => {});
+}
+
+// Install Prompt - Android/Desktop Chrome
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // أظهر البانر فقط عند توفر الـ prompt الحقيقي
+  if (!localStorage.getItem('install_dismissed')) {
+    document.getElementById('install-banner').classList.add('show');
+  }
+});
+
+// iOS: أظهر تعليمات يدوية إذا Safari وليس مثبتاً
+function checkIOSInstall() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if (isIOS && isSafari && !isStandalone && !localStorage.getItem('install_dismissed')) {
+    document.getElementById('install-banner').classList.add('show');
+    document.getElementById('install-btn').textContent = 'كيفية التثبيت';
+    document.getElementById('install-btn').onclick = () => {
+      alert('لتثبيت التطبيق على iPhone:\n\n1️⃣ اضغط زر المشاركة (الأسهم) في الأسفل\n2️⃣ اختر "إضافة إلى الشاشة الرئيسية"\n3️⃣ اضغط "إضافة"');
+    };
+  }
+}
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') {
+        document.getElementById('install-banner').classList.remove('show');
+        localStorage.setItem('install_dismissed', '1');
+      }
+      deferredPrompt = null;
+    });
+  } else {
+    // iOS أو متصفح لا يدعم install prompt
+    alert('لتثبيت التطبيق:\n\n📱 iPhone/iPad (Safari):\nزر المشاركة ← إضافة للشاشة الرئيسية\n\n🤖 Android (Chrome):\nالقائمة (⋮) ← تثبيت التطبيق\n\n💻 الكمبيوتر (Chrome/Edge):\nأيقونة التثبيت في شريط العنوان');
+  }
+}
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('install_dismissed', '1');
+}
+
+// ==================== DATA MANAGEMENT ====================
+const S = localStorage;
+let D = {expenses:[],bills:[],shopping:[],tasks:[],inventory:[],openingBalance:0,plans:[],maintenance:[],contacts:[],documents:[],savings:[],meals:[],subscriptions:[]};
+let currentMember = 'أنا';
+let autoSaveTimer = null;
+
+function load() {
+  try {
+    const d = S.getItem('home_mgmt_v4');
+    if (d) D = JSON.parse(d);
+  } catch(e) {}
+}
+
+function sv() {
+  try {
+    S.setItem('home_mgmt_v4', JSON.stringify(D));
+    showAutoSave();
+  } catch(e) {}
+}
+
+function showAutoSave() {
+  const el = document.getElementById('auto-save');
+  el.classList.add('show');
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// Auto-save on page hide
+window.addEventListener('beforeunload', () => {
+  sv();
+  autoExport();
+});
+
+// Auto-export backup
+function autoExport() {
+  const data = JSON.stringify(D, null, 2);
+  S.setItem('home_mgmt_backup_' + new Date().toISOString().slice(0,10), data);
+}
+
+load();
+
+const dnames = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const mnames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const now = new Date();
+document.getElementById('today-date').textContent = dnames[now.getDay()] + '، ' + now.getDate() + ' ' + mnames[now.getMonth()] + ' ' + now.getFullYear();
+
+function fmt(n) { return Math.round(n).toLocaleString('ar-SA') + ' ر.س'; }
+
+function sp(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'report') renderReport();
+  if (id === 'home') renderHome();
+  if (id === 'planning') renderPlanning();
+  if (id === 'maintenance') renderMaint();
+  if (id === 'contacts') renderContacts();
+  if (id === 'docs') renderDocs();
+  if (id === 'savings') renderSavings();
+  if (id === 'meals') renderMeals();
+  if (id === 'subs') renderSubs();
+}
+
+function setMember(member, btn) {
+  currentMember = member;
+  document.querySelectorAll('.fm-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ==================== SHARING FEATURES ====================
+function shareWhatsApp() {
+  // أولاً: حاول Web Share API (يفتح واتساب مباشرة على الجوال)
+  const data = JSON.stringify(D, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const file = new File([blob], 'home_data_' + new Date().toISOString().slice(0,10) + '.json', {type: 'application/json'});
+
+  if (navigator.share) {
+    if (navigator.canShare && navigator.canShare({files: [file]})) {
+      // جوال حديث — مشاركة ملف مباشرة
+      navigator.share({ title: 'بيانات إدارة المنزل', text: 'بيانات نظام إدارة المنزل والأسرة — استوردها في جهازك', files: [file] })
+        .catch(() => downloadAndAlert(data));
+    } else {
+      // مشاركة نص مضغوط
+      const compressed = btoa(unescape(encodeURIComponent(data)));
+      navigator.share({ title: 'بيانات إدارة المنزل', text: 'استوردها في نظام إدارة المنزل:\n' + compressed.substring(0, 300) + '...' })
+        .catch(() => downloadAndAlert(data));
+    }
+  } else {
+    downloadAndAlert(data);
+  }
+}
+
+function downloadAndAlert(data) {
+  const blob = new Blob([data], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'home_data_' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  setTimeout(() => alert('✅ تم تحميل الملف!\n\nأرسله للزوجة عبر واتساب ثم تستورده من الإعدادات > استيراد'), 500);
+}
+
+function quickShare() { shareWhatsApp(); }
+
+function copyToClipboard() {
+  const data = JSON.stringify(D);
+  navigator.clipboard.writeText(data).then(() => {
+    alert('تم نسخ البيانات! أرسلها للزوجة للصقها في جهازها');
+  }).catch(() => {
+    const textarea = document.createElement('textarea');
+    textarea.value = data;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('تم نسخ البيانات!');
+  });
+}
+
+// ==================== HEADER & ALERTS ====================
+function updateHeader() {
+  const totExp = D.expenses.reduce((s,e) => s+e.amount, 0);
+  const totBills = D.bills.reduce((s,b) => s+b.amount, 0);
+  const totSubs = D.subscriptions.reduce((s,b) => s+(b.cycle==='monthly'?b.cost:b.cost/12), 0);
+  const totMaint = D.maintenance.reduce((s,m) => s+m.cost, 0);
+  const rem = D.openingBalance > 0 ? D.openingBalance - totExp - totBills - totSubs - totMaint : null;
+  const el = document.getElementById('hdr-bal');
+  if (rem === null) { el.textContent = '— ر.س'; el.style.color = 'var(--text-secondary)'; }
+  else { el.textContent = fmt(rem); el.style.color = rem < 0 ? '#A32D2D' : '#0F6E56'; }
+}
+
+function renderAlerts() {
+  const alerts = [];
+  const today = now.getDate();
+
+  D.bills.forEach(b => {
+    if (b.dueDay && today >= b.dueDay-3 && today <= b.dueDay+2) 
+      alerts.push({type:'bill', msg:'فاتورة ' + b.name + ' مستحقة يوم ' + b.dueDay + ' بمبلغ ' + fmt(b.amount)});
+  });
+
+  D.inventory.forEach(i => {
+    if (i.qty <= i.min) 
+      alerts.push({type:'inv', msg:'المخزون: ' + i.name + ' ينفد (' + i.qty + ' متبقي)'});
+  });
+
+  const newShop = D.shopping.filter(s => s.who === 'الزوجة' && !s.done && !s.seen);
+  if (newShop.length) 
+    alerts.push({type:'shop', msg:'الزوجة أضافت ' + newShop.length + ' طلب جديد للمشتريات'});
+
+  D.documents.forEach(d => {
+    if (d.expiry) {
+      const exp = new Date(d.expiry);
+      const diff = Math.ceil((exp - now) / (1000*60*60*24));
+      if (diff <= 30 && diff > 0) alerts.push({type:'doc', msg:'وثيقة ' + d.name + ' تنتهي خلال ' + diff + ' يوم'});
+      if (diff <= 0) alerts.push({type:'bill', msg:'وثيقة ' + d.name + ' منتهية!'});
+    }
+  });
+
+  D.subscriptions.forEach(s => {
+    if (s.day && today >= s.day-2 && today <= s.day+2) 
+      alerts.push({type:'shop', msg:'تجديد اشتراك ' + s.name + ' (' + fmt(s.cost) + ')'});
+  });
+
+  const ab = document.getElementById('alerts-bar');
+  if (!alerts.length) { ab.innerHTML = ''; return; }
+  ab.innerHTML = alerts.map(a => `<div class="${a.type==='bill'?'bill-overdue':'notif-banner'}" style="margin:8px 12px 0;direction:rtl"><i class="ti ti-bell" style="font-size:16px;flex-shrink:0"></i>${a.msg}</div>`).join('');
+}
+
+// ==================== HOME ====================
+function renderHome() {
+  const totExp = D.expenses.reduce((s,e) => s+e.amount, 0);
+  const totBills = D.bills.reduce((s,b) => s+b.amount, 0);
+  const totSubs = D.subscriptions.reduce((s,b) => s+(b.cycle==='monthly'?b.cost:b.cost/12), 0);
+  const totMaint = D.maintenance.reduce((s,m) => s+m.cost, 0);
+  const rem = D.openingBalance > 0 ? D.openingBalance - totExp - totBills - totSubs - totMaint : null;
+
+  document.getElementById('h-exp').textContent = fmt(totExp + totBills + totSubs + totMaint);
+  document.getElementById('h-bal').textContent = rem !== null ? fmt(rem) : '— ر.س';
+  document.getElementById('h-bal').className = 'mv ' + (rem !== null ? (rem < 0 ? 'r' : 'g') : '');
+  document.getElementById('h-bills').textContent = D.bills.length;
+  document.getElementById('h-shop').textContent = D.shopping.filter(s => !s.done).length;
+  document.getElementById('h-tasks').textContent = D.tasks.filter(t => !t.done).length;
+  document.getElementById('h-goals').textContent = D.savings.length;
+
+  const today = now.getDate();
+  const upcoming = D.bills.filter(b => b.dueDay && Math.abs(today - b.dueDay) <= 5);
+  const ob = document.getElementById('home-overdue-bills');
+  if (upcoming.length) {
+    ob.innerHTML = '<p class="st"><i class="ti ti-file-invoice"></i>فواتير قادمة خلال 5 أيام</p>' +
+      upcoming.map(b => `<div class="rr"><span>${b.name}</span><span style="font-weight:500;color:#A32D2D">${fmt(b.amount)}</span></div>`).join('');
+  } else ob.innerHTML = '<p class="st"><i class="ti ti-check"></i>لا توجد فواتير قادمة قريباً</p>';
+
+  const pendList = D.shopping.filter(s => !s.done).slice(0, 4);
+  const osp = document.getElementById('home-shop-pending');
+  if (pendList.length) {
+    osp.innerHTML = '<p class="st"><i class="ti ti-shopping-cart"></i>طلبات مشتريات معلقة</p>' +
+      pendList.map(s => `<div class="rr"><span>${s.name} <span style="font-size:11px;color:var(--text-secondary)">(${s.who})</span></span><span class="badge ba">${s.cat}</span></div>`).join('');
+  } else osp.innerHTML = '<p class="st"><i class="ti ti-check"></i>لا توجد طلبات مشتريات معلقة</p>';
+
+  const urgentTasks = D.tasks.filter(t => !t.done && t.priority === 'high').slice(0, 3);
+  const ut = document.getElementById('home-tasks-urgent');
+  if (urgentTasks.length) {
+    ut.innerHTML = '<p class="st"><i class="ti ti-alert-circle"></i>مهام عاجلة</p>' +
+      urgentTasks.map(t => `<div class="rr"><span>${t.name}</span><span class="badge br">عاجل</span></div>`).join('');
+  } else ut.innerHTML = '<p class="st"><i class="ti ti-check"></i>لا توجد مهام عاجلة</p>';
+
+  const recentMaint = D.maintenance.slice(0, 3);
+  const mt = document.getElementById('home-maintenance');
+  if (recentMaint.length) {
+    mt.innerHTML = '<p class="st"><i class="ti ti-tool"></i>آخر عمليات الصيانة</p>' +
+      recentMaint.map(m => `<div class="rr"><span>${m.item}</span><span style="font-size:11px;color:var(--text-secondary)">${m.date}</span></div>`).join('');
+  } else mt.innerHTML = '<p class="st"><i class="ti ti-check"></i>لا توجد سجلات صيانة</p>';
+}
+
+// ==================== EXPENSES ====================
+function renderExpMetrics() {
+  const total = D.expenses.reduce((s,e) => s+e.amount, 0);
+  const bills = D.bills.reduce((s,b) => s+b.amount, 0);
+  const subs = D.subscriptions.reduce((s,b) => s+(b.cycle==='monthly'?b.cost:b.cost/12), 0);
+  const maint = D.maintenance.reduce((s,m) => s+m.cost, 0);
+  const rem = D.openingBalance > 0 ? D.openingBalance - total - bills - subs - maint : null;
+  const pct = D.openingBalance > 0 ? Math.min(100, Math.round(((total+bills+subs+maint)/D.openingBalance)*100)) : 0;
+
+  document.getElementById('te').textContent = fmt(total);
+  document.getElementById('re').textContent = rem !== null ? fmt(rem) : '— ر.س';
+  document.getElementById('re').className = 'mv ' + (rem !== null ? (rem < 0 ? 'r' : 'g') : '');
+  document.getElementById('ep-fill').style.width = pct + '%';
+  document.getElementById('ep-fill').style.background = pct > 80 ? '#A32D2D' : pct > 60 ? '#BA7517' : '#0F6E56';
+  document.getElementById('ep-pct').textContent = pct + '% من الرصيد الافتتاحي';
+  updateHeader();
+}
+
+function addExp() {
+  const n = document.getElementById('en').value.trim();
+  const a = parseFloat(document.getElementById('ea').value);
+  const c = document.getElementById('ec').value;
+  if (!n || !a || a <= 0) return;
+  D.expenses.unshift({id:Date.now(), name:n, amount:a, cat:c, date:now.toISOString().slice(0,10)});
+  sv(); document.getElementById('en').value = ''; document.getElementById('ea').value = '';
+  renderExpMetrics(); renderExpList(); renderAlerts();
+}
+
+function delExp(id) { D.expenses = D.expenses.filter(e => e.id !== id); sv(); renderExpMetrics(); renderExpList(); }
+
+function renderExpList() {
+  const cmap = {إيجار:'br', فواتير:'br', طعام:'ba', 'طعام وتسوق':'ba', صيانة:'ba', تعليم:'bb', صحة:'bb', ترفيه:'bg', مواصلات:'ba', أخرى:'bb'};
+  const el = document.getElementById('exp-list');
+  if (!D.expenses.length) { el.innerHTML = '<p class="empty">لا توجد مصاريف</p>'; return; }
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>سجل المصاريف</p>' +
+    D.expenses.map(e => `<div class="li"><div><span style="color:var(--text-primary)">${e.name}</span><br><span class="badge ${cmap[e.cat]||'bb'}">${e.cat}</span><span style="font-size:11px;color:var(--text-tertiary);margin-right:4px">${e.date||''}</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:500">${Math.round(e.amount).toLocaleString('ar-SA')} ر.س</span><button class="bd" onclick="delExp(${e.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`).join('') + '</div>';
+}
+
+// ==================== BILLS ====================
+function addBill() {
+  const n = document.getElementById('bn').value.trim();
+  const a = parseFloat(document.getElementById('ba').value);
+  const d = parseInt(document.getElementById('bd').value) || 1;
+  const c = document.getElementById('bc').value;
+  if (!n || !a) return;
+  D.bills.unshift({id:Date.now(), name:n, amount:a, dueDay:d, cat:c});
+  sv(); document.getElementById('bn').value=''; document.getElementById('ba').value=''; document.getElementById('bd').value='';
+  renderBills(); renderExpMetrics(); renderAlerts();
+}
+
+function delBill(id) { D.bills = D.bills.filter(b => b.id !== id); sv(); renderBills(); renderExpMetrics(); }
+
+function renderBills() {
+  const tot = D.bills.reduce((s,b) => s+b.amount, 0);
+  document.getElementById('bt').textContent = D.bills.length;
+  document.getElementById('bm').textContent = fmt(tot);
+  const el = document.getElementById('bill-list');
+  if (!D.bills.length) { el.innerHTML = '<p class="empty">لا توجد فواتير ثابتة</p>'; return; }
+  const today = now.getDate();
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>الفواتير الثابتة الشهرية</p>' +
+    D.bills.map(b => {
+      const near = b.dueDay && Math.abs(today - b.dueDay) <= 5;
+      return `<div class="li"><div><span style="color:var(--text-primary)">${b.name}</span><br><span class="badge ${near?'br':'bb'}">يوم ${b.dueDay} من كل شهر</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:500">${Math.round(b.amount).toLocaleString('ar-SA')} ر.س</span><button class="bd" onclick="delBill(${b.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('') + '</div>';
+}
+
+// ==================== SHOPPING ====================
+function addShop() {
+  const n = document.getElementById('sh-name').value.trim();
+  const q = parseInt(document.getElementById('sh-qty').value) || 1;
+  const c = document.getElementById('sh-cat').value;
+  const w = document.getElementById('sh-who').value;
+  if (!n) return;
+  D.shopping.unshift({id:Date.now(), name:n, qty:q, cat:c, who:w, done:false, seen:false});
+  sv(); document.getElementById('sh-name').value=''; document.getElementById('sh-qty').value='';
+  renderShop(); renderAlerts(); renderHome();
+}
+
+function toggleShop(id) {
+  const s = D.shopping.find(s => s.id === id);
+  if (s) { s.done = !s.done; s.seen = true; }
+  sv(); renderShop(); renderHome();
+}
+
+function delShop(id) { D.shopping = D.shopping.filter(s => s.id !== id); sv(); renderShop(); renderHome(); }
+
+function renderShop() {
+  const pend = D.shopping.filter(s => !s.done);
+  const done = D.shopping.filter(s => s.done);
+  document.getElementById('sp-pend').textContent = pend.length;
+  document.getElementById('sp-done').textContent = done.length;
+  const el = document.getElementById('shop-list');
+  if (!D.shopping.length) { el.innerHTML = '<p class="empty">القائمة فارغة</p>'; return; }
+  const whoColor = {أنا:'bb', الزوجة:'bg', الأطفال:'ba'};
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>قائمة المشتريات</p>' +
+    D.shopping.map(s => `<div class="chi"><input type="checkbox" id="sh${s.id}" ${s.done?'checked':''} onchange="toggleShop(${s.id})"><label for="sh${s.id}" class="${s.done?'dn':''}">${s.name} <span style="font-size:11px;color:var(--text-secondary)">×${s.qty} — ${s.cat}</span></label><span class="badge ${whoColor[s.who]||'bb'}" style="margin-left:4px">${s.who}</span><button class="bd" onclick="delShop(${s.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div>`).join('') + '</div>';
+}
+
+// ==================== TASKS ====================
+function addTask() {
+  const n = document.getElementById('tk-name').value.trim();
+  const p = document.getElementById('tk-pri').value;
+  const c = document.getElementById('tk-cat').value;
+  const a = document.getElementById('tk-assign').value;
+  if (!n) return;
+  D.tasks.unshift({id:Date.now(), name:n, priority:p, cat:c, assign:a, done:false});
+  sv(); document.getElementById('tk-name').value=''; renderTasks(); renderHome();
+}
+
+function toggleTask(id) { const t = D.tasks.find(t => t.id === id); if (t) t.done = !t.done; sv(); renderTasks(); renderHome(); }
+function delTask(id) { D.tasks = D.tasks.filter(t => t.id !== id); sv(); renderTasks(); renderHome(); }
+
+function renderTasks() {
+  const done = D.tasks.filter(t => t.done).length;
+  document.getElementById('tt').textContent = D.tasks.length;
+  document.getElementById('td').textContent = done;
+  const pc = {high:'#A32D2D', med:'#BA7517', low:'#0F6E56'};
+  const el = document.getElementById('task-list');
+  if (!D.tasks.length) { el.innerHTML = '<p class="empty">لا توجد مهام</p>'; return; }
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>قائمة المهام</p>' +
+    D.tasks.map(t => `<div class="chi"><div class="pdot" style="background:${pc[t.priority]}"></div><input type="checkbox" id="tk${t.id}" ${t.done?'checked':''} onchange="toggleTask(${t.id})"><label for="tk${t.id}" class="${t.done?'dn':''}">${t.name} <span style="color:var(--text-tertiary);font-size:11px">(${t.cat})</span></label><span class="badge bb" style="margin-left:4px;font-size:10px">${t.assign}</span><button class="bd" onclick="delTask(${t.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div>`).join('') + '</div>';
+}
+
+// ==================== INVENTORY ====================
+function addInv() {
+  const n = document.getElementById('iv-name').value.trim();
+  const q = parseInt(document.getElementById('iv-qty').value);
+  const m = parseInt(document.getElementById('iv-min').value) || 1;
+  if (!n || isNaN(q)) return;
+  D.inventory.unshift({id:Date.now(), name:n, qty:q, min:m});
+  sv(); document.getElementById('iv-name').value=''; document.getElementById('iv-qty').value=''; document.getElementById('iv-min').value='';
+  renderInv(); renderAlerts();
+}
+
+function chQty(id, d) { const i = D.inventory.find(i => i.id === id); if (i) i.qty = Math.max(0, i.qty + d); sv(); renderInv(); renderAlerts(); }
+function delInv(id) { D.inventory = D.inventory.filter(i => i.id !== id); sv(); renderInv(); }
+
+function renderInv() {
+  const low = D.inventory.filter(i => i.qty <= i.min).length;
+  document.getElementById('it').textContent = D.inventory.length;
+  document.getElementById('il').textContent = low;
+  const el = document.getElementById('inv-list');
+  if (!D.inventory.length) { el.innerHTML = '<p class="empty">لا توجد أصناف</p>'; return; }
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>المخزون</p>' +
+    D.inventory.map(i => {
+      const low = i.qty <= i.min;
+      return `<div class="li"><div><span style="color:var(--text-primary)">${i.name}</span><br><span class="badge ${low?'br':'bg'}">${low?'ينفد':'كافٍ'}</span></div><div style="display:flex;align-items:center;gap:6px"><button onclick="chQty(${i.id},-1)" style="border:0.5px solid var(--border-tertiary);background:var(--bg-secondary);border-radius:var(--radius-md);padding:2px 8px;cursor:pointer;font-size:16px" aria-label="تقليل">−</button><span style="font-weight:500;min-width:24px;text-align:center">${i.qty}</span><button onclick="chQty(${i.id},1)" style="border:0.5px solid var(--border-tertiary);background:var(--bg-secondary);border-radius:var(--radius-md);padding:2px 8px;cursor:pointer;font-size:16px" aria-label="زيادة">+</button><button class="bd" onclick="delInv(${i.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('') + '</div>';
+}
+
+// ==================== PLANNING ====================
+function addPlan() {
+  const t = document.getElementById('pl-title').value.trim();
+  const d = document.getElementById('pl-date').value;
+  const ty = document.getElementById('pl-type').value;
+  const n = document.getElementById('pl-note').value.trim();
+  if (!t || !d) return;
+  D.plans.unshift({id:Date.now(), title:t, date:d, type:ty, note:n});
+  sv(); document.getElementById('pl-title').value=''; document.getElementById('pl-date').value=''; document.getElementById('pl-note').value='';
+  renderPlanning();
+}
+
+function delPlan(id) { D.plans = D.plans.filter(p => p.id !== id); sv(); renderPlanning(); }
+
+function renderPlanning() {
+  const school = D.plans.filter(p => p.type === 'school').length;
+  const events = D.plans.filter(p => p.type === 'event' || p.type === 'medical').length;
+  document.getElementById('pl-events').textContent = events;
+  document.getElementById('pl-school').textContent = school;
+  const el = document.getElementById('plan-list');
+  if (!D.plans.length) { el.innerHTML = '<p class="empty">لا توجد مواعيد</p>'; return; }
+  const types = {school:'موعد مدرسي', event:'مناسبة عائلية', goal:'هدف شهري', medical:'موعد طبي'};
+  const tc = {school:'bb', event:'bg', goal:'ba', medical:'br'};
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>المواعيد والأهداف</p>' +
+    D.plans.sort((a,b) => new Date(a.date) - new Date(b.date)).map(p => {
+      const diff = Math.ceil((new Date(p.date) - now) / (1000*60*60*24));
+      return `<div class="li"><div><span style="color:var(--text-primary)">${p.title}</span><br><span class="badge ${tc[p.type]||'bb'}">${types[p.type]||p.type}</span><span style="font-size:11px;color:var(--text-tertiary);margin-right:4px">${p.date} ${diff>0?'(بعد '+diff+' يوم)':diff===0?'(اليوم)':'(فات)'}</span></div><div style="display:flex;align-items:center;gap:8px"><button class="bd" onclick="delPlan(${p.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('') + '</div>';
+}
+
+// ==================== MAINTENANCE ====================
+function addMaint() {
+  const item = document.getElementById('mt-item').value.trim();
+  const desc = document.getElementById('mt-desc').value.trim();
+  const cost = parseFloat(document.getElementById('mt-cost-input').value) || 0;
+  const date = document.getElementById('mt-date').value;
+  const warranty = document.getElementById('mt-warranty').value.trim();
+  const phone = document.getElementById('mt-phone').value.trim();
+  if (!item) return;
+  D.maintenance.unshift({id:Date.now(), item, desc, cost, date, warranty, phone});
+  sv();
+  document.getElementById('mt-item').value=''; document.getElementById('mt-desc').value='';
+  document.getElementById('mt-cost-input').value=''; document.getElementById('mt-date').value='';
+  document.getElementById('mt-warranty').value=''; document.getElementById('mt-phone').value='';
+  renderMaint(); renderExpMetrics(); renderHome();
+}
+
+function delMaint(id) { D.maintenance = D.maintenance.filter(m => m.id !== id); sv(); renderMaint(); renderExpMetrics(); renderHome(); }
+
+function renderMaint() {
+  const count = D.maintenance.length;
+  const total = D.maintenance.reduce((s,m) => s+m.cost, 0);
+  document.getElementById('mt-count').textContent = count;
+  document.getElementById('mt-cost').textContent = fmt(total);
+  const el = document.getElementById('maint-list');
+  if (!D.maintenance.length) { el.innerHTML = '<p class="empty">لا توجد سجلات صيانة</p>'; return; }
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>سجل الصيانة</p>' +
+    D.maintenance.map(m => `<div class="li"><div><span style="color:var(--text-primary);font-weight:500">${m.item}</span><br><span style="font-size:11px;color:var(--text-secondary)">${m.desc||''} ${m.date?'| '+m.date:''} ${m.warranty?'| ضمان: '+m.warranty:''}</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:500">${m.cost?fmt(m.cost):''}</span><button class="bd" onclick="delMaint(${m.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`).join('') + '</div>';
+}
+
+// ==================== CONTACTS ====================
+function addContact() {
+  const n = document.getElementById('ct-name').value.trim();
+  const t = document.getElementById('ct-type').value;
+  const p = document.getElementById('ct-phone').value.trim();
+  const note = document.getElementById('ct-note').value.trim();
+  if (!n || !p) return;
+  D.contacts.unshift({id:Date.now(), name:n, type:t, phone:p, note});
+  sv(); document.getElementById('ct-name').value=''; document.getElementById('ct-phone').value=''; document.getElementById('ct-note').value='';
+  renderContacts();
+}
+
+function delContact(id) { D.contacts = D.contacts.filter(c => c.id !== id); sv(); renderContacts(); }
+
+function renderContacts() {
+  const el = document.getElementById('contact-list');
+  if (!D.contacts.length) { el.innerHTML = '<p class="empty">لا توجد جهات اتصال</p>'; return; }
+  const icons = {emergency:'ti ti-phone', maintenance:'ti ti-tool', medical:'ti ti-heartbeat', school:'ti ti-school', other:'ti ti-user'};
+  const tc = {emergency:'br', maintenance:'ba', medical:'bg', school:'bb', other:'bb'};
+  const tn = {emergency:'طوارئ', maintenance:'صيانة', medical:'طبيب', school:'مدرسة', other:'أخرى'};
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>جهات الاتصال</p>' +
+    D.contacts.map(c => `<div class="contact-card"><div class="contact-icon"><i class="${icons[c.type]||'ti ti-user'}"></i></div><div class="contact-info"><div class="contact-name">${c.name}</div><div class="contact-phone">${c.phone}</div><div style="font-size:11px;color:var(--text-secondary)">${c.note||''}</div></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${tc[c.type]||'bb'}">${tn[c.type]||c.type}</span><button class="bd" onclick="delContact(${c.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`).join('') + '</div>';
+}
+
+// ==================== DOCUMENTS ====================
+function addDoc() {
+  const n = document.getElementById('dc-name').value.trim();
+  const t = document.getElementById('dc-type').value;
+  const ref = document.getElementById('dc-ref').value.trim();
+  const exp = document.getElementById('dc-expiry').value;
+  const note = document.getElementById('dc-note').value.trim();
+  if (!n) return;
+  D.documents.unshift({id:Date.now(), name:n, type:t, ref, expiry:exp, note});
+  sv(); document.getElementById('dc-name').value=''; document.getElementById('dc-ref').value=''; document.getElementById('dc-expiry').value=''; document.getElementById('dc-note').value='';
+  renderDocs(); renderAlerts();
+}
+
+function delDoc(id) { D.documents = D.documents.filter(d => d.id !== id); sv(); renderDocs(); renderAlerts(); }
+
+function renderDocs() {
+  const expCount = D.documents.filter(d => {
+    if (!d.expiry) return false;
+    const diff = Math.ceil((new Date(d.expiry) - now) / (1000*60*60*24));
+    return diff <= 30;
+  }).length;
+  document.getElementById('dc-count').textContent = D.documents.length;
+  document.getElementById('dc-exp').textContent = expCount;
+  const el = document.getElementById('doc-list');
+  if (!D.documents.length) { el.innerHTML = '<p class="empty">لا توجد وثائق</p>'; return; }
+  const types = {rent:'عقد إيجار', insurance:'تأمين', warranty:'ضمان', id:'هوية', car:'استمارة سيارة', school:'وثائق مدرسية', medical:'تقرير طبي', other:'أخرى'};
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>الوثائق المهمة</p>' +
+    D.documents.map(d => {
+      let status = '';
+      if (d.expiry) {
+        const diff = Math.ceil((new Date(d.expiry) - now) / (1000*60*60*24));
+        if (diff <= 0) status = '<span class="badge br">منتهية</span>';
+        else if (diff <= 30) status = '<span class="badge ba">تنتهي قريباً</span>';
+        else status = '<span class="badge bg">سارية</span>';
+      }
+      return `<div class="doc-item"><div style="flex:1"><div style="font-weight:500">${d.name}</div><div style="font-size:11px;color:var(--text-secondary)">${types[d.type]||d.type} ${d.ref?'| رقم: '+d.ref:''} ${d.expiry?'| ينتهي: '+d.expiry:''}</div></div><div style="display:flex;align-items:center;gap:8px">${status}<button class="bd" onclick="delDoc(${d.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('') + '</div>';
+}
+
+// ==================== SAVINGS ====================
+function addSavings() {
+  const n = document.getElementById('sg-name').value.trim();
+  const t = parseFloat(document.getElementById('sg-target').value);
+  const c = parseFloat(document.getElementById('sg-current').value) || 0;
+  const d = document.getElementById('sg-date').value;
+  if (!n || !t) return;
+  D.savings.unshift({id:Date.now(), name:n, target:t, current:c, date:d});
+  sv(); document.getElementById('sg-name').value=''; document.getElementById('sg-target').value=''; document.getElementById('sg-current').value=''; document.getElementById('sg-date').value='';
+  renderSavings(); renderHome();
+}
+
+function delSavings(id) { D.savings = D.savings.filter(s => s.id !== id); sv(); renderSavings(); renderHome(); }
+
+function renderSavings() {
+  const total = D.savings.reduce((s,g) => s+g.current, 0);
+  document.getElementById('sg-count').textContent = D.savings.length;
+  document.getElementById('sg-total').textContent = fmt(total);
+  const el = document.getElementById('savings-list');
+  if (!D.savings.length) { el.innerHTML = '<p class="empty">لا توجد أهداف ادخار</p>'; return; }
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>أهداف الادخار</p>' +
+    D.savings.map(s => {
+      const pct = Math.min(100, Math.round((s.current/s.target)*100));
+      return `<div class="goal-card"><div class="goal-title">${s.name}</div><div class="goal-bar"><div class="goal-fill" style="width:${pct}%;background:${pct>=100?'#0F6E56':pct>60?'#185FA5':'#BA7517'}"></div></div><div class="goal-meta"><span>${fmt(s.current)} / ${fmt(s.target)}</span><span>${pct}% ${s.date?'| مستهدف: '+s.date:''}</span></div><div style="text-align:left;margin-top:6px"><button class="bd" onclick="delSavings(${s.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('') + '</div>';
+}
+
+// ==================== MEALS ====================
+function addMeal() {
+  const day = parseInt(document.getElementById('ml-day').value);
+  const lunch = document.getElementById('ml-lunch').value.trim();
+  const dinner = document.getElementById('ml-dinner').value.trim();
+  if (!lunch && !dinner) return;
+  const existing = D.meals.findIndex(m => m.day === day);
+  if (existing >= 0) D.meals[existing] = {day, lunch, dinner};
+  else D.meals.push({day, lunch, dinner});
+  sv(); document.getElementById('ml-lunch').value=''; document.getElementById('ml-dinner').value='';
+  renderMeals();
+}
+
+function delMeal(day) { D.meals = D.meals.filter(m => m.day !== day); sv(); renderMeals(); }
+
+function renderMeals() {
+  const el = document.getElementById('meal-list');
+  if (!D.meals.length) { el.innerHTML = '<p class="empty">لا توجد وجبات مخططة</p>'; return; }
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>خطة الوجبات الأسبوعية</p>' +
+    D.meals.sort((a,b) => a.day - b.day).map(m => `<div class="meal-day"><strong>${days[m.day]}</strong>${m.lunch?`<div class="meal-item">🍽️ الغداء: ${m.lunch}</div>`:''}${m.dinner?`<div class="meal-item">🌙 العشاء: ${m.dinner}</div>`:''}<div style="text-align:left;margin-top:4px"><button class="bd" style="font-size:11px;padding:4px 8px" onclick="delMeal(${m.day})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`).join('') + '</div>';
+}
+
+// ==================== SUBSCRIPTIONS ====================
+function addSub() {
+  const n = document.getElementById('sb-name').value.trim();
+  const cost = parseFloat(document.getElementById('sb-cost').value);
+  const cycle = document.getElementById('sb-cycle').value;
+  const day = parseInt(document.getElementById('sb-day').value) || 1;
+  if (!n || !cost) return;
+  D.subscriptions.unshift({id:Date.now(), name:n, cost, cycle, day});
+  sv(); document.getElementById('sb-name').value=''; document.getElementById('sb-cost').value=''; document.getElementById('sb-day').value='';
+  renderSubs(); renderExpMetrics(); renderAlerts(); renderHome();
+}
+
+function delSub(id) { D.subscriptions = D.subscriptions.filter(s => s.id !== id); sv(); renderSubs(); renderExpMetrics(); renderAlerts(); renderHome(); }
+
+function renderSubs() {
+  const count = D.subscriptions.length;
+  const total = D.subscriptions.reduce((s,b) => s+(b.cycle==='monthly'?b.cost:b.cost/12), 0);
+  document.getElementById('sb-count').textContent = count;
+  document.getElementById('sb-total').textContent = fmt(total);
+  const el = document.getElementById('sub-list');
+  if (!D.subscriptions.length) { el.innerHTML = '<p class="empty">لا توجد اشتراكات</p>'; return; }
+  const today = now.getDate();
+  el.innerHTML = '<div class="card"><p class="st"><i class="ti ti-list"></i>الاشتراكات الشهرية</p>' +
+    D.subscriptions.map(s => {
+      const near = s.day && Math.abs(today - s.day) <= 3;
+      return `<div class="sub-item"><div><div class="sub-name">${s.name}</div><div class="sub-meta">${s.cycle==='monthly'?'شهري':'سنوي'} | يوم التجديد: ${s.day}</div></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${near?'br':'bg'}">${near?'قريب':'نشط'}</span><span class="sub-cost">${fmt(s.cost)}</span><button class="bd" onclick="delSub(${s.id})" aria-label="حذف"><i class="ti ti-trash"></i></button></div></div>`;
+    }).join('') + '</div>';
+}
+
+// ==================== REPORT ====================
+function renderReport() {
+  const totExp = D.expenses.reduce((s,e) => s+e.amount, 0);
+  const totBills = D.bills.reduce((s,b) => s+b.amount, 0);
+  const totSubs = D.subscriptions.reduce((s,b) => s+(b.cycle==='monthly'?b.cost:b.cost/12), 0);
+  const totMaint = D.maintenance.reduce((s,m) => s+m.cost, 0);
+  const totAll = totExp + totBills + totSubs + totMaint;
+  const rem = D.openingBalance > 0 ? D.openingBalance - totAll : null;
+  const pct = D.openingBalance > 0 ? Math.round((totAll/D.openingBalance)*100) : 0;
+
+  document.getElementById('r-open').textContent = D.openingBalance > 0 ? fmt(D.openingBalance) : 'غير محدد';
+  document.getElementById('r-bills').textContent = fmt(totBills);
+  document.getElementById('r-other').textContent = fmt(totExp);
+  document.getElementById('r-subs').textContent = fmt(totSubs);
+  document.getElementById('r-maint').textContent = fmt(totMaint);
+  document.getElementById('r-total').textContent = fmt(totAll);
+  document.getElementById('r-rem').textContent = rem !== null ? fmt(rem) : '—';
+  document.getElementById('r-rem').className = 'mv ' + (rem !== null ? (rem < 0 ? 'r' : 'g') : '');
+  document.getElementById('r-pct').textContent = pct + '%';
+  document.getElementById('r-pct').className = 'mv ' + (pct > 80 ? 'r' : pct > 60 ? 'a' : 'g');
+
+  const cats = {};
+  D.expenses.forEach(e => { cats[e.cat] = (cats[e.cat]||0) + e.amount; });
+  if (totBills > 0) cats['فواتير ثابتة'] = (cats['فواتير ثابتة']||0) + totBills;
+  if (totSubs > 0) cats['اشتراكات'] = (cats['اشتراكات']||0) + totSubs;
+  if (totMaint > 0) cats['صيانة'] = (cats['صيانة']||0) + totMaint;
+
+  const catEl = document.getElementById('r-cats');
+  const bc = {'فواتير ثابتة':'#A32D2D', 'اشتراكات':'#185FA5', 'صيانة':'#854F0B', 'إيجار':'#A32D2D', 'فواتير':'#A32D2D', 'طعام':'#BA7517', 'طعام وتسوق':'#BA7517', 'ترفيه':'#0F6E56', 'تعليم':'#185FA5', 'صحة':'#185FA5', 'مواصلات':'#BA7517', 'أخرى':'#888780'};
+
+  if (!Object.keys(cats).length) { catEl.innerHTML = '<p class="empty">لا توجد مصاريف</p>'; }
+  else {
+    catEl.innerHTML = Object.entries(cats).sort((a,b) => b[1]-a[1]).map(([c,a]) => {
+      const p = totAll > 0 ? Math.round((a/totAll)*100) : 0;
+      return `<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:3px"><span>${c}</span><span>${Math.round(a).toLocaleString('ar-SA')} ر.س (${p}%)</span></div><div class="pb"><div class="pf" style="width:${p}%;background:${bc[c]||'#888780'}"></div></div></div>`;
+    }).join('');
+  }
+
+  document.getElementById('r-tt').textContent = D.tasks.length;
+  document.getElementById('r-td').textContent = D.tasks.filter(t => t.done).length;
+  document.getElementById('r-il').textContent = D.inventory.filter(i => i.qty <= i.min).length;
+  document.getElementById('r-sp').textContent = D.shopping.filter(s => !s.done).length;
+  document.getElementById('r-mt').textContent = D.maintenance.length;
+  document.getElementById('r-sg').textContent = D.savings.length;
+}
+
+// ==================== SETTINGS ====================
+function saveOB() {
+  const v = parseFloat(document.getElementById('ob-input').value);
+  if (!v || v <= 0) return;
+  D.openingBalance = v; sv();
+  document.getElementById('ob-display').textContent = fmt(v);
+  document.getElementById('ob-input').value = '';
+  renderExpMetrics(); updateHeader();
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(D, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'home_data_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importData(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => { try { D = JSON.parse(ev.target.result); sv(); checkURLData();
+initRender(); } catch(err) { alert('خطأ في الملف'); } };
+  r.readAsText(file);
+}
+
+// ==================== INIT ====================
+
+// ==================== QR CODE SYNC ====================
+// Load QRCode library dynamically
+function loadQRCode() {
+  return new Promise((resolve) => {
+    if (window.QRCode) { resolve(); return; }
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    script.onload = resolve;
+    document.head.appendChild(script);
+  });
+}
+
+function generateQR() {
+  loadQRCode().then(() => {
+    const container = document.getElementById('qr-code-container');
+    container.innerHTML = '';
+    const data = JSON.stringify(D);
+    // Compress data for QR
+    const compressed = btoa(unescape(encodeURIComponent(data))).substring(0, 2000);
+    new QRCode(container, {
+      text: compressed,
+      width: 180,
+      height: 180,
+      colorDark: '#185FA5',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    document.getElementById('qr-modal').style.display = 'flex';
+  });
+}
+
+function closeQRModal() {
+  document.getElementById('qr-modal').style.display = 'none';
+}
+
+function shareQRWhatsApp() {
+  const data = JSON.stringify(D, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const file = new File([blob], 'home_data_sync.json', {type: 'application/json'});
+
+  if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) {
+    navigator.share({
+      title: 'مزامنة إدارة المنزل',
+      text: 'بيانات نظام إدارة المنزل - قم باستيرادها في جهازك',
+      files: [file]
+    });
+  } else {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'home_data_sync.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('تم تحميل الملف! أرسله للزوجة عبر واتساب');
+  }
+}
+
+function shareQRWhatsApp() {
+  // شارك الملف مباشرة عبر واتساب
+  shareWhatsApp();
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#qr-code-container canvas');
+  if (canvas) {
+    const link = document.createElement('a');
+    link.download = 'home_sync_qr.png';
+    link.href = canvas.toDataURL();
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } else {
+    alert('أنشئ الكود أولاً');
+  }
+}
+
+// ==================== QR CAMERA SCAN ====================
+let scanStream = null;
+
+function openCameraScan() {
+  document.getElementById('camera-modal').style.display = 'flex';
+  startCameraQR();
+}
+
+function closeCameraScan() {
+  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  document.getElementById('camera-modal').style.display = 'none';
+  document.getElementById('scan-status').textContent = 'جارٍ البحث عن كود QR...';
+}
+
+function startCameraQR() {
+  const video = document.getElementById('scan-video');
+  const status = document.getElementById('scan-status');
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    status.textContent = '❌ الكاميرا غير مدعومة في هذا المتصفح';
+    return;
+  }
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      scanStream = stream;
+      video.srcObject = stream;
+      video.play();
+      status.textContent = 'وجّه الكاميرا نحو كود QR...';
+
+      // محاولة قراءة QR بـ BarcodeDetector (مدعوم في Chrome/Android)
+      if ('BarcodeDetector' in window) {
+        const detector = new BarcodeDetector({formats: ['qr_code']});
+        const scanInterval = setInterval(async () => {
+          if (!scanStream) { clearInterval(scanInterval); return; }
+          try {
+            const codes = await detector.detect(video);
+            if (codes.length > 0) {
+              clearInterval(scanInterval);
+              status.textContent = '✅ تم مسح الكود!';
+              processScannedQR(codes[0].rawValue);
+            }
+          } catch(e) {}
+        }, 500);
+      } else {
+        // Fallback: jsQR من CDN
+        loadJsQR().then(() => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const scanInterval = setInterval(() => {
+            if (!scanStream) { clearInterval(scanInterval); return; }
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const code = jsQR(imageData.data, imageData.width, imageData.height);
+              if (code) {
+                clearInterval(scanInterval);
+                status.textContent = '✅ تم مسح الكود!';
+                processScannedQR(code.data);
+              }
+            }
+          }, 500);
+        }).catch(() => {
+          status.textContent = '❌ مسح QR غير مدعوم. استخدم الاستيراد اليدوي.';
+        });
+      }
+    })
+    .catch(err => {
+      status.textContent = '❌ تعذّر الوصول للكاميرا. تأكد من منح الإذن.';
+    });
+}
+
+function loadJsQR() {
+  return new Promise((resolve, reject) => {
+    if (window.jsQR) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+    s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+function processScannedQR(raw) {
+  try {
+    let data;
+    if (raw.startsWith('{')) data = JSON.parse(raw);
+    else data = JSON.parse(decodeURIComponent(escape(atob(raw))));
+    if (confirm('تم مسح البيانات! هل تريد استيرادها؟')) {
+      D = data; sv(); initRender();
+      closeCameraScan();
+      alert('✅ تم الاستيراد بنجاح!');
+    }
+  } catch(e) {
+    document.getElementById('scan-status').textContent = '❌ بيانات غير صالحة في الكود';
+  }
+}
+
+function openImportModal() {
+  document.getElementById('import-modal').style.display = 'flex';
+}
+
+function closeImportModal() {
+  document.getElementById('import-modal').style.display = 'none';
+  document.getElementById('import-data-text').value = '';
+}
+
+function importFromText() {
+  const text = document.getElementById('import-data-text').value.trim();
+  if (!text) return;
+  try {
+    let data;
+    if (text.startsWith('{')) {
+      data = JSON.parse(text);
+    } else {
+      // Try base64 decode
+      data = JSON.parse(decodeURIComponent(escape(atob(text))));
+    }
+    if (confirm('هل تريد استبدال البيانات الحالية؟ سيتم فقدان البيانات القديمة!')) {
+      D = data;
+      sv();
+      checkURLData();
+initRender();
+      closeImportModal();
+      alert('✅ تم استيراد البيانات بنجاح!');
+    }
+  } catch(e) {
+    alert('❌ خطأ في البيانات! تأكد من نسخها بشكل صحيح');
+  }
+}
+
+// ==================== ENHANCED SHARING ====================
+function shareViaLink() {
+  const data = btoa(unescape(encodeURIComponent(JSON.stringify(D))));
+  const url = window.location.href.split('?')[0] + '?data=' + encodeURIComponent(data.substring(0, 1500));
+  navigator.clipboard.writeText(url).then(() => {
+    alert('تم نسخ الرابط! أرسله للزوجة');
+  });
+}
+
+function checkURLData() {
+  const params = new URLSearchParams(window.location.search);
+  const data = params.get('data');
+  if (data) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(escape(atob(data))));
+      if (confirm('تم العثور على بيانات في الرابط! هل تريد استيرادها؟')) {
+        D = decoded;
+        sv();
+        checkURLData();
+initRender();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    } catch(e) {}
+  }
+}
+
+
+function initRender() {
+  if (D.openingBalance > 0) document.getElementById('ob-display').textContent = fmt(D.openingBalance);
+  renderExpMetrics(); renderExpList(); renderBills(); renderShop(); renderTasks(); renderInv();
+  renderPlanning(); renderMaint(); renderContacts(); renderDocs(); renderSavings(); renderMeals(); renderSubs();
+  updateHeader(); renderAlerts(); renderHome();
+
+  // Check iOS install
+  checkIOSInstall();
+}
+
+// ==================== GOOGLE SHEETS INTEGRATION ====================
+let sheetsURL = localStorage.getItem('sheets_url') || '';
+
+function saveSheetURL() {
+  const url = document.getElementById('sheets-url-input').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    setSheetStatus('❌ الرابط غير صحيح', 'r'); return;
+  }
+  sheetsURL = url;
+  localStorage.setItem('sheets_url', url);
+  document.getElementById('sheets-url-input').value = '';
+  document.getElementById('sync-btn').disabled = false;
+  document.getElementById('pull-btn').disabled = false;
+  document.getElementById('sheets-conn-badge').textContent = 'متصل';
+  document.getElementById('sheets-conn-badge').className = 'badge bg';
+  setSheetStatus('✅ تم حفظ الرابط', 'g');
+}
+
+function setSheetStatus(msg, type) {
+  const el = document.getElementById('sheets-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = type==='g'?'#065f46':type==='r'?'#991b1b':'#92400e';
+}
+
+function testSheetConnection() {
+  if (!sheetsURL) { setSheetStatus('⚠️ أدخل الرابط أولاً', 'w'); return; }
+  setSheetStatus('🔄 جارٍ الاختبار...', 'w');
+  fetch(sheetsURL + '?action=ping', {method:'GET', mode:'no-cors'})
+    .then(() => {
+      setSheetStatus('✅ الاتصال يعمل!', 'g');
+      document.getElementById('sheets-conn-badge').textContent = 'متصل';
+      document.getElementById('sheets-conn-badge').className = 'badge bg';
+      document.getElementById('sync-btn').disabled = false;
+      document.getElementById('pull-btn').disabled = false;
+    }).catch(() => setSheetStatus('❌ تعذّر الاتصال', 'r'));
+}
+
+async function syncToSheets() {
+  if (!sheetsURL) { alert('أضف رابط Google Sheets أولاً'); return; }
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true; btn.textContent = '⏳ جارٍ الإرسال...';
+  try {
+    await fetch(sheetsURL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'sync', data:D, timestamp:new Date().toISOString()})
+    });
+    const t = new Date().toLocaleString('ar-SA');
+    document.getElementById('sheets-last-sync').textContent = t;
+    localStorage.setItem('sheets_last_sync', t);
+    setSheetStatus('✅ تمت المزامنة ' + t, 'g');
+    showAutoSave();
+  } catch(e) {
+    setSheetStatus('❌ فشل الإرسال', 'r');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="ti ti-refresh"></i> مزامنة الآن';
+  }
+}
+
+async function pullFromSheets() {
+  if (!sheetsURL) { alert('أضف رابط Google Sheets أولاً'); return; }
+  const btn = document.getElementById('pull-btn');
+  btn.disabled = true; btn.textContent = '⏳ جارٍ الاستيراد...';
+  try {
+    const res = await fetch(sheetsURL + '?action=pull');
+    const data = await res.json();
+    if (data && data.expenses) {
+      if (confirm('تم جلب البيانات. هل تريد الاستبدال؟')) { D=data; sv(); initRender(); setSheetStatus('✅ تم الاستيراد', 'g'); }
+    } else setSheetStatus('⚠️ لا توجد بيانات في Sheets بعد', 'w');
+  } catch(e) {
+    setSheetStatus('❌ فشل الاستيراد. تأكد من صلاحيات الـ Script', 'r');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<i class="ti ti-cloud-download"></i> استيراد من Sheets';
+  }
+}
+
+function initSheetsUI() {
+  if (!sheetsURL) return;
+  document.getElementById('sync-btn').disabled = false;
+  document.getElementById('pull-btn').disabled = false;
+  document.getElementById('sheets-conn-badge').textContent = 'متصل';
+  document.getElementById('sheets-conn-badge').className = 'badge bg';
+  const ls = localStorage.getItem('sheets_last_sync');
+  if (ls) document.getElementById('sheets-last-sync').textContent = ls;
+}
+
+function checkURLData() {}
+initRender();
+initSheetsUI();
+
+</script>
+
+<!-- QR Sync Modal -->
+<div id="qr-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;direction:rtl">
+  <div style="background:var(--bg-primary);border-radius:var(--radius-lg);padding:20px;max-width:90%;width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <h3 style="font-size:16px;margin-bottom:12px;color:var(--text-primary)"><i class="ti ti-qrcode"></i> مزامنة البيانات</h3>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">امسح الكود من جهاز الزوجة أو شاركه عبر واتساب</p>
+    <div id="qr-code-container" style="margin:16px auto;width:200px;height:200px;background:var(--bg-secondary);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-direction:column">
+      <button class="bp" onclick="shareQRWhatsApp()" style="width:100%"><i class="ti ti-brand-whatsapp"></i> إرسال عبر واتساب</button>
+      <button class="bp" onclick="downloadQR()" style="width:100%;background:var(--bg-secondary);color:var(--text-secondary);border-color:var(--border-secondary)"><i class="ti ti-download"></i> تحميل صورة الكود</button>
+      <button class="bw" onclick="closeQRModal()" style="width:100%"><i class="ti ti-x"></i> إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Data Modal -->
+<div id="import-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;direction:rtl">
+  <div style="background:var(--bg-primary);border-radius:var(--radius-lg);padding:20px;max-width:90%;width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <h3 style="font-size:16px;margin-bottom:12px;color:var(--text-primary)"><i class="ti ti-scan"></i> استيراد البيانات</h3>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px">الصق البيانات المشفرة هنا أو امسح كود QR بالكاميرا</p>
+    <textarea id="import-data-text" style="width:100%;height:100px;font-size:11px;direction:ltr;margin-bottom:12px" placeholder="الصق البيانات هنا..."></textarea>
+    <div style="display:flex;gap:8px;flex-direction:column">
+      <button class="bp" onclick="importFromText()" style="width:100%"><i class="ti ti-check"></i> استيراد من النص</button>
+      <button class="bp" onclick="closeImportModal();openCameraScan()" style="width:100%;background:#25D366;color:white;border-color:#1ea855"><i class="ti ti-camera"></i> مسح QR بالكاميرا</button>
+      <button class="bw" onclick="closeImportModal()" style="width:100%"><i class="ti ti-x"></i> إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Camera QR Scan Modal -->
+<div id="camera-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;direction:rtl;flex-direction:column">
+  <div style="background:var(--bg-primary);border-radius:var(--radius-lg);padding:16px;width:90%;max-width:360px;text-align:center">
+    <h3 style="font-size:15px;margin-bottom:12px;color:var(--text-primary)"><i class="ti ti-camera"></i> مسح كود QR</h3>
+    <div style="position:relative;border-radius:var(--radius-md);overflow:hidden;background:#000;aspect-ratio:1;margin-bottom:12px">
+      <video id="scan-video" style="width:100%;height:100%;object-fit:cover" playsinline muted autoplay></video>
+      <div style="position:absolute;inset:0;border:3px solid #185FA5;border-radius:var(--radius-md);pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.3) inset"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:160px;height:160px;border:2px solid #fff;border-radius:8px;pointer-events:none"></div>
+    </div>
+    <p id="scan-status" style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">جارٍ البحث عن كود QR...</p>
+    <button class="bw" onclick="closeCameraScan()" style="width:100%"><i class="ti ti-x"></i> إغلاق</button>
+  </div>
+</div>
+
+
+
+</body></html>
